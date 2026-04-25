@@ -13,6 +13,21 @@
 <html lang="uz">
 <head>
 <meta charset="UTF-8">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2DB87A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="O'zbek tili mashqlari">
+<link rel="apple-touch-icon" href="icon-192.png">
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('/Ozbek-tili/sw.js')
+      .then(function(reg){ console.log('SW registered'); })
+      .catch(function(err){ console.log('SW error:', err); });
+  });
+}
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Oʻzbek tili</title>
 
@@ -713,7 +728,7 @@ function renderMyResults(){
   const usr=document.getElementById('user-my-results');
   if(adm)adm.classList.add('hidden');if(usr)usr.classList.remove('hidden');
   const cont=document.getElementById('my-results-content');if(!cont)return;
-  const lbl={d:'Diktant 1',d2:'Diktant 2',m53:'53-mashq',m18:'18-mashq',tarozi:'Tarozi 1',tarozi2:'Tarozi 2',unlilar:'Unlilar 1',unlilar2:'Unlilar 2',shakl:'Shakllar'};
+  const lbl={d:'Oyning uyi',d2:'Oyning uyi 2',m53:'Unlilar',m18:'Unli/Undosh',tarozi:'Buzuq tarozi',tarozi2:'Buzuq tarozi 2',unlilar:'Doktor va uning hayvonlari',unlilar2:'Doktor va uning hayvonlari 2',shakl:'Shakl'};
   const tasks=Object.keys(lbl);
   const latest={};tasks.forEach(tk=>{const recs=hist.filter(r=>r.task===tk).sort((a,b)=>(b.ts||0)-(a.ts||0));if(recs.length)latest[tk]=recs[0];});
   const done=tasks.filter(tk=>latest[tk]);
@@ -1530,7 +1545,7 @@ function renderStatistika(){
   const db=loadDB();const users=db.users;
   const cont=document.getElementById('statistika-content');
   if(!users.length){cont.innerHTML='<p style="text-align:center;color:var(--text-muted);font-size:0.875rem;padding:1.5rem 0;">Hali hech qanday foydalanuvchi yo\'q.</p>';return;}
-  const taskLabels={d:'Diktant 1',d2:'Diktant 2',m53:'53-mashq',m18:'18-mashq',tarozi:'Tarozi',unlilar:'Unlilar'};
+  const taskLabels={d:'Oyning uyi',d2:'Oyning uyi 2',m53:'Unlilar',m18:'Unli/Undosh',tarozi:'Buzuq tarozi',unlilar:'Doktor va uning hayvonlari'};
   const taskKeys=['d','d2','m53','m18','tarozi','unlilar'];
   let totalUsers=users.length,totalAttempts=0;
   users.forEach(u=>{totalAttempts+=(db.results[u.id]||[]).length;});
@@ -1604,7 +1619,7 @@ function renderAdminUsers(){
   const db=loadDB();const users=db.users;const cont=document.getElementById('admin-users-content');
   if(!users.length){cont.innerHTML='<p style="text-align:center;color:var(--text-muted);font-size:0.875rem;padding:1rem 0;">Hali hech kim ro\'yxatdan o\'tmagan.</p>';return;}
   const taskKeys=['d','d2','m53','m18','tarozi','unlilar'];
-  const taskNames=['Diktant 1','Diktant 2','53-mashq','18-mashq','Tarozi','Unlilar'];
+  const taskNames=['Oyning uyi','Oyning uyi 2','Unlilar','Unli/Undosh','Buzuq tarozi','Doktor va uning hayvonlari'];
   const colors=['#4361EE','#2DB87A','#E84040','#F59E0B','#7C3AED','#0891B2'];
   let html='<div style="margin-bottom:0.75rem;font-size:0.78rem;color:var(--text-muted);font-weight:600;">Jami: '+users.length+' ta foydalanuvchi</div>';
   users.forEach(u=>{
@@ -1631,7 +1646,7 @@ function renderAdminStat(){
   const db=loadDB();const users=db.users;const cont=document.getElementById('admin-stat-content');
   if(!users.length){cont.innerHTML='<p style="text-align:center;color:var(--text-muted);font-size:0.875rem;padding:1rem 0;">Ma\'lumot yo\'q.</p>';return;}
   const taskKeys=['d','d2','m53','m18','tarozi','unlilar'];
-  const taskNames=['Diktant','53-mashq','18-mashq','Buzuq tarozi','Unlilar qayerda'];
+  const taskNames=['Oyning uyi','Unlilar','Unli/Undosh','Buzuq tarozi','Doktor va uning hayvonlari'];
   let totalAttempts=0;users.forEach(u=>{totalAttempts+=(db.results[u.id]||[]).length;});
   let allScores=[];users.forEach(u=>{const s=getUserScores(u.id);taskKeys.forEach(t=>{if(s[t]!==null)allScores.push(s[t]);});});
   const overallAvg=allScores.length?Math.round(allScores.reduce((a,b)=>a+b,0)/allScores.length):0;

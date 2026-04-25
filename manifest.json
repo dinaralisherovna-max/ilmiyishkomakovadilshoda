@@ -1,0 +1,25 @@
+{
+  "name": "O'zbek tili mashqlari",
+  "short_name": "O'zbek tili",
+  "description": "O'zbek tili diktant va mashqlar platformasi",
+  "start_url": "/Ozbek-tili/",
+  "scope": "/Ozbek-tili/",
+  "display": "standalone",
+  "background_color": "#2DB87A",
+  "theme_color": "#2DB87A",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
