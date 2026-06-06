@@ -1928,6 +1928,13 @@ switchAuthTab('register');
 (async function(){
   await renderSavedUsersOnRegister();
 })();
-</script>
-</body>
-</html>
+1931  </script>
+1932  <script>
+1933  if ('serviceWorker' in navigator) {
+1934    window.addEventListener('load', () => {
+1935      navigator.serviceWorker.register('./sw.js');
+1936    });
+1937  }
+1938  </script>
+1939  </body>
+1940  </html>
