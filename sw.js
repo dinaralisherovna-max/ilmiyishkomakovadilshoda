@@ -1,43 +1,52 @@
-const CACHE_NAME = 'uzbek-tili-v1';
-const urlsToCache = [
-  '/Ozbek-tili/',
-  '/Ozbek-tili/index.html'
-];
+const CACHE_NAME = 'uzbektili-v2';
 
-self.addEventListener('install', function(event) {
+self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(function(cache) {
-      return cache.addAll(urlsToCache);
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll([
+        './',
+        './index.html',
+        './manifest.json',
+        './icon-192.png',
+        './icon-512.png',
+      ]);
     })
   );
+  self.skipWaiting();
 });
 
-self.addEventListener('fetch', function(event) {
-  event.respondWith(
-    caches.match(event.request).then(function(response) {
-      if (response) return response;
-      return fetch(event.request).then(function(response) {
-        if (!response || response.status !== 200) return response;
-        var responseClone = response.clone();
-        caches.open(CACHE_NAME).then(function(cache) {
-          cache.put(event.request, responseClone);
-        });
-        return response;
-      });
-    })
-  );
-});
-
-self.addEventListener('activate', function(event) {
+self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then(function(cacheNames) {
-      return Promise.all(
-        cacheNames.filter(function(name) {
-          return name !== CACHE_NAME;
-        }).map(function(name) {
-          return caches.delete(name);
+    caches.keys().then((keys) =>
+      Promise.all(
+        keys.map((key) => {
+          if (key !== CACHE_NAME) return caches.delete(key);
         })
-      );
+      )
+    )
+  );
+  self.clients.claim();
+});
+
+self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET') return;
+
+  event.respondWith(
+    caches.match(event.request).then((cached) => {
+      if (cached) return cached;
+
+      return fetch(event.request)
+        .then((response) => {
+          if (!response || response.status !== 200) return response;
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, clone);
+          });
+          return response;
+        })
+        .catch(() => {
+          return caches.match('./index.html');
+        });
     })
   );
 });
