@@ -900,7 +900,7 @@ async function loginAs(userId){
   const freshDb = await loadDBFromSupabase();
   const user=freshDb.users.find(u=>u.id===userId);
   if(!user)return;
-  currentUser=user;
+  currentUser=user;try{const my=JSON.parse(localStorage.getItem('my_users')||'[]');if(!my.includes(String(user.id))){my.push(String(user.id));localStorage.setItem('my_users',JSON.stringify(my));}}catch(e){}
   document.getElementById('current-user-name').textContent=user.name;
   document.getElementById('auth-overlay').style.display='none';
   document.getElementById('app-main').classList.add('show');
@@ -976,7 +976,8 @@ function renderSavedUsers(){
 
 async function renderSavedUsersOnRegister(){
   const db = await loadDBFromSupabase();
-  const users=db.users;
+  let my=[];try{my=JSON.parse(localStorage.getItem('my_users')||'[]');}catch(e){}
+  const users=db.users.filter(u=>my.includes(String(u.id)));
   const sect=document.getElementById('existing-users-section');
   const cont=document.getElementById('existing-users-container');
   if(!sect||!cont)return;
@@ -1928,13 +1929,13 @@ switchAuthTab('register');
 (async function(){
   await renderSavedUsersOnRegister();
 })();
-1931  </script>
-1932  <script>
-1933  if ('serviceWorker' in navigator) {
-1934    window.addEventListener('load', () => {
-1935      navigator.serviceWorker.register('./sw.js');
-1936    });
-1937  }
-1938  </script>
-1939  </body>
-1940  </html>
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+window.addEventListener('load', () => {
+navigator.serviceWorker.register('./sw.js');
+});
+}
+</script>
+</body>
+</html>
